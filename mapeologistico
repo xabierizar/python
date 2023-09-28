@@ -1,0 +1,30 @@
+# Importar las bibliotecas necesarias
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Definir el mapeo logístico
+def logistic_map(x, r):
+  return r * x * (1 - x)
+
+# Definir la función para calcular la sensibilidad
+def sensitivity(x, r):
+  return (logistic_map(x + 1e-5, r) - logistic_map(x - 1e-5, r)) / (2 * 1e-5)
+
+# Cargar los datos
+data = np.loadtxt("data.csv", delimiter=",")
+
+# Implementar el mapeo logístico
+x_logistic = np.zeros(data.shape[0])
+for i in range(data.shape[0]):
+  x_logistic[i] = logistic_map(data[i, 0], r)
+
+# Implementar el análisis de la sensibilidad
+x_sensitivity = np.zeros(data.shape[0])
+for i in range(data.shape[0]):
+  x_sensitivity[i] = sensitivity(data[i, 0], r)
+
+# Graficar los resultados
+plt.plot(data[:, 0], x_logistic, label="Mapeo logístico")
+plt.plot(data[:, 0], x_sensitivity, label="Análisis de la sensibilidad")
+plt.legend()
+plt.show()
