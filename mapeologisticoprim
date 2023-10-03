@@ -46,5 +46,28 @@ df = df.sort_values(by="probabilidad", ascending=False)
 # Obtenemos los 6 números con la probabilidad más alta
 resultado = df["número"].to_list()[:6]
 
+# Imprimimos el sorteo
+print(sorteo)
+import numpy as np
+import pandas as pd
+
+# Definimos los datos
+data = {
+    "número": np.arange(1, 50),
+    "probabilidad": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+}
+
+# Creamos el DataFrame
+df = pd.DataFrame(data)
+
+# Cargamos el modelo de aprendizaje automático
+model = load_model("model.h5")
+
+# Obtenemos las predicciones del modelo
+predictions = model.predict(df)
+
+# Obtenemos los 6 números con la probabilidad más alta
+resultado = df["número"].to_list()[:6]
+
 # Imprimimos el resultado
-print(resultado)
+print(sorteo)
