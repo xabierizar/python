@@ -1,76 +1,73 @@
-# Importar las bibliotecas necesarias
-import numpy as np
-import matplotlib.pyplot as plt
-
-# Definir el mapeo logístico
-def logistic_map(x, r):
-  return r * x * (1 - x)
-
-# Definir la función para calcular la sensibilidad
-def sensitivity(x, r):
-  return (logistic_map(x + 1e-5, r) - logistic_map(x - 1e-5, r)) / (2 * 1e-5)
-
-# Cargar los datos
-data = np.loadtxt("dataprim.csv", delimiter=",")
-
-# Implementar el mapeo logístico
-x_logistic = np.zeros(data.shape[0])
-for i in range(data.shape[0]):
-  x_logistic[i] = logistic_map(data[i, 0], r)
-
-# Implementar el análisis de la sensibilidad
-x_sensitivity = np.zeros(data.shape[0])
-for i in range(data.shape[0]):
-  x_sensitivity[i] = sensitivity(data[i, 0], r)
-
-# Graficar los resultados
-plt.plot(data[:, 0], x_logistic, label="Mapeo logístico")
-plt.plot(data[:, 0], x_sensitivity, label="Análisis de la sensibilidad")
-plt.legend()
-plt.show()
 import numpy as np
 import pandas as pd
 
-# Definimos los datos
-data = {
-    "número": np.arange(1, 49),
-    "probabilidad": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-}
+def mapeo_logistico(x):
+  """
+  Aplica el mapeo logístico a un número.
 
-# Creamos el DataFrame
-df = pd.DataFrame(data)
+  Args:
+    x: El número a transformar.
 
-# Ordenamos el DataFrame por probabilidad
-df = df.sort_values(by="probabilidad", ascending=False)
+  Returns:
+    El número transformado.
+  """
+  return 1 / (1 + np.exp(-x))
 
-# Obtenemos los 6 números con la probabilidad más alta
-resultado = df["número"].to_list()[:6]
+def analisis_sensibilidad(probabilidades):
+  """
+  Aplica el análisis de sensibilidad a un conjunto de probabilidades.
 
-# Imprimimos el sorteo
-print(sorteo)
-import numpy as np
-import pandas as pd
+  Args:
+    probabilidades: El conjunto de probabilidades.
 
-# Definimos los datos
-data = {
-    "número": np.arange(1, 49),
-    "probabilidad": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-}
+  Returns:
+    Un conjunto de valores que representan la sensibilidad de la probabilidad de cada bloque de números a los cambios en los parámetros del mapeo logístico.
+  """
+  sensibilidad = []
+  for i in range(len(probabilidades)):
+    probabilidad_actual = probabilidades[i]
+    for j in range(len(probabilidades)):
+      if i != j:
+        probabilidad_modificada = probabilidades[j]
+        sensibilidad.append(abs(probabilidad_actual - probabilidad_modificada))
+  return sensibilidad
 
-# Creamos el DataFrame
-df = pd.DataFrame(data)
+def generar_bloque_numeros(probabilidades):
+  """
+  Genera un bloque de 6 números a partir de un conjunto de probabilidades.
 
-# Cargamos el modelo de aprendizaje automático
-model = load_model("model.h5")
+  Args:
+    probabilidades: El conjunto de probabilidades.
 
-# Obtenemos las predicciones del modelo
-predictions = model.predict(df)
+  Returns:
+    Un bloque de 6 números.
+  """
+  bloques_numeros = []
+  for i in range(len(probabilidades)):
+    bloques_numeros.append([i])
+  bloques_numeros = sorted(bloques_numeros, key=lambda x: x[0], reverse=True)
+  return bloques_numeros[0]
 
-# Obtenemos los 6 números con la probabilidad más alta
-resultado = df["número"].to_list()[:6]
+def main():
+  # Cargamos los datos
+  datos = pd.read_csv("dataprim.csv")
 
-# Imprimimos el resultado
-print(sorteo)
+  # Aplicamos el mapeo logístico
+  probabilidades = []
+  for numeros in datos.values:
+    probabilidades.append(mapeo_logistico(numeros[0] + numeros[1] + numeros[2] + numeros[3] + numeros[4] + numeros[5]))
+
+  # Aplicamos el análisis de sensibilidad
+  sensibilidad = analisis_sensibilidad(probabilidades)
+
+  # Generamos un bloque de 6 números
+  bloque_numeros = generar_bloque_numeros(probabilidades)
+
+  # Imprimimos el bloque de números
+  print(bloque_numeros[1:])
+
+if __name__ == "__main__":
+  main()
 
 # Aprendizaje automatico
 import numpy as np
