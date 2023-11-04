@@ -21,7 +21,7 @@ def generate_block(data):
     return generate_block(data)
 
 def main():
-  # Carga el conjunto de datos de sorteos de la Primitiva.
+  # Carga el conjunto de datos del archivo actualizado de dataprim.csv
   data = np.loadtxt("dataprim.csv", dtype=int, skiprows=1)
 
   # Genera un bloque de 6 números.
