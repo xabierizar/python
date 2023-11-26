@@ -1,0 +1,36 @@
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import KFold
+from sklearn.linear_model import LinearRegression
+
+# Cargamos los datos
+data = pd.read_csv("izar_data.csv")
+
+# Dividimos los datos en feature y target
+X = data.drop(columns=["target"])
+y = data["target"]
+
+# Creemos un objeto KFold para realizar la cross-validación
+kf = KFold(n_splits=5, shuffle=True, random_state=42)
+
+# Iteramos sobre cada splits y realizamos la cross-validación
+results = []
+for train_index, val_index in kf.split(X):
+    X_train, y_train = X[train_index], y[train_index]
+    X_val, y_val = X[val_index], y[val_index]
+    
+    # Realizamos la regresión lineal en el conjunto de entrenamiento
+    reg = LinearRegression()
+    reg.fit(X_train, y_train)
+    
+    # Predeciamos en el conjunto de validación
+    y_pred = reg.predict(X_val)
+    
+    # Almacenamos los resultados
+    results.append((reg.score(X_val, y_val), y_pred))
+
+# Calculamos el resultado final
+result = np.array(results).mean(axis=0)
+
+# Printiamos el resultado final
+print(result)
