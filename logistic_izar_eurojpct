@@ -1,55 +1,33 @@
 # Importar las librerías necesarias
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import KFold
-from sklearn.metrics import r2_score
-from sklearn.preprocessing import PolynomialFeatures
-from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
 
 # Leer el archivo csv y convertirlo en un array de numpy
-df = pd.read_csv('jpt_izar_data.csv', header=None)
+df = pd.read_csv('izar_data.csv', header=None)
 data = df.values
 
 # Separar el primer y el segundo número de cada bloque
 X = data[:,0].reshape(-1,1)
 y = data[:,1].reshape(-1,1)
 
-# Crear el objeto para realizar la validación cruzada con k=10
-kf = KFold(n_splits=10)
+# Crear el objeto para realizar la regresión logística
+logreg = LogisticRegression()
 
-# Crear el objeto para transformar los datos en polinomios de grado 3
-poly = PolynomialFeatures(degree=3)
+# Ajustar el modelo con todos los datos
+logreg.fit(X, y)
 
-# Crear el objeto para realizar la regresión lineal
-reg = LinearRegression()
+# Predecir el segundo número para el primer número 12
+y_pred = logreg.predict([[12]])
 
-# Inicializar una lista vacía para guardar los resultados de cada iteración
-results = []
+# Mostrar el bloque numérico final
+print(f'El bloque numérico final es: 12,{y_pred[0]}')
 
-# Realizar la validación cruzada
-for train_index, test_index in kf.split(X):
-    # Separar los datos de entrenamiento y de prueba
-    X_train, X_test = X[train_index], X[test_index]
-    y_train, y_test = y[train_index], y[test_index]
-    
-    # Transformar los datos de entrenamiento y de prueba en polinomios
-    X_train_poly = poly.fit_transform(X_train)
-    X_test_poly = poly.transform(X_test)
-    
-    # Ajustar el modelo con los datos de entrenamiento
-    reg.fit(X_train_poly, y_train)
-    
-    # Predecir los valores con los datos de prueba
-    y_pred = reg.predict(X_test_poly)
-    
-    # Calcular el coeficiente de determinación R^2
-    r2 = r2_score(y_test, y_pred)
-    
-    # Añadir el resultado a la lista
-    results.append(r2)
-
-# Mostrar los resultados de cada iteración y la media
-print('Resultados de cada iteración:')
-for i, r in enumerate(results):
-    print(f'Iteración {i+1}: R^2 = {r:.3f}')
-print(f'Media de R^2: {np.mean(results):.3f}')
+# Graficar la curva ajustada y los datos originales
+plt.scatter(X, y, color='blue')
+plt.plot(X, logreg.predict(X), color='red')
+plt.xlabel('Primer número')
+plt.ylabel('Segundo número')
+plt.title('Regresión logística')
+plt.show()
