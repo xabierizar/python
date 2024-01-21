@@ -1,144 +1,40 @@
-import requests
+python
+# Código de mapeologistico
 
-url = 'https://www.dropbox.com/scl/fi/msxo1w8jzrzibxzfzrpm9/data.csv?rlkey=cngq8735mg2z0um1s4081s81n&dl=0'
-response = requests.get(url)
-data = response.content
-with open('data.csv', 'wb') as f:
-    f.write(data)
-import pandas as pd
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+# Importamos las librerías necesarias
+import numpy as np # Para operaciones matemáticas
+import matplotlib.pyplot as plt # Para hacer gráficos
 
-# Leemos el archivo CSV
-df = pd.read_csv('data.csv')
+# Definimos la función de mapeo logístico
+def logistic_map(r, x):
+    return r * x * (1 - x)
 
-# Aplicamos el mapeo logístico
-X = df.drop(['target'], axis=1)
-y = df['target']
-X_logistic = np.log(X / (1 - X))
+# Definimos el valor de r
+r = 3.9
 
-# Aplicamos el análisis de sensibilidad
-y_pred = LogisticRegression() .fit(X_logistic, y)
-conf_mat = confusion_matrix(y, y_pred)
-accuracy = accuracy_score(y, y_pred)
-precision = precision_score(y, y_pred, average='weighted')
-recall = recall_score(y, y_pred, average='weighted')
-f1 = f1_score(y, y_pred, average='weighted')
+# Definimos el valor inicial de x
+x0 = 0.5
 
-# Mostramos los resultados
-print("Confusion matrix:")
-print(conf_mat)
-print(f"Accuracy: {accuracy:.3f}")
-print(f"Precision: {precision:.3f}")
-print(f"Recall: {recall:.3f}")
-print(f"F1-Score: {f1:.3f}")
+# Definimos el número de iteraciones
+n = 100
 
-# Generamos un nuevo bloque de 5 números entre el 1 y el 50
-new_block = np.random.randint(1, 50, size=(5,))
+# Creamos una lista vacía para guardar los valores de x
+x_values = []
 
-# Mostramos el nuevo bloque
-print(f"Nuevo bloque: {new_block}")
-# Importar las bibliotecas necesarias
-import numpy as np
-import matplotlib.pyplot as plt
+# Iteramos n veces la función de mapeo logístico
+for i in range(n):
+    x = logistic_map(r, x0)
+    x_values.append(x)
 
-# Definir el mapeo logístico
-def logistic_map(x, r):
-  return r * x * (1 - x)
+# Convertimos la lista en un array de numpy
+x_array = np.array(x_values)
 
-# Definir la función para calcular la sensibilidad
-def sensitivity(x, r):
-  return (logistic_map(x + 1e-5, r) - logistic_map(x - 1e-5, r)) / (2 * 1e-5)
+# Creamos un array de numpy con los valores de i
+i_array = np.arange(n)
 
-# Cargar los datos
-data = np.loadtxt("data.csv", delimiter=",")
-
-# Implementar el mapeo logístico
-x_logistic = np.zeros(data.shape[0])
-for i in range(data.shape[0]):
-  x_logistic[i] = logistic_map(data[i, 0], r)
-
-# Implementar el análisis de la sensibilidad
-x_sensitivity = np.zeros(data.shape[0])
-for i in range(data.shape[0]):
-  x_sensitivity[i] = sensitivity(data[i, 0], r)
-
-# Graficar los resultados
-plt.plot(data[:, 0], x_logistic, label="Mapeo logístico")
-plt.plot(data[:, 0], x_sensitivity, label="Análisis de la sensibilidad")
-plt.legend()
-plt.show()
-import numpy as np
-import pandas as pd
-
-# Definimos los datos
-data = {
-    "número": np.arange(1, 50),
-    "probabilidad": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-}
-
-# Creamos el DataFrame
-df = pd.DataFrame(data)
-
-# Ordenamos el DataFrame por probabilidad
-df = df.sort_values(by="probabilidad", ascending=False)
-
-# Obtenemos los 5 números con la probabilidad más alta
-resultado = df["número"].to_list()[:5]
-
-# Imprimimos el sorteo
-print(sorteo)
-import numpy as np
-import pandas as pd
-
-# Definimos los datos
-data = {
-    "número": np.arange(1, 50),
-    "probabilidad": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-}
-
-# Creamos el DataFrame
-df = pd.DataFrame(data)
-
-# Cargamos el modelo de aprendizaje automático
-model = load_model("model.h5")
-
-# Obtenemos las predicciones del modelo
-predictions = model.predict(df)
-
-# Obtenemos los 5 números con la probabilidad más alta
-resultado = df["número"].to_list()[:5]
-
-# Imprimimos el resultado
-print(sorteo)
-
-# Aprendizaje automatico
-import numpy as np
-import pandas as pd
-
-# Definimos los datos
-data = {
-    "número": np.arange(1, 50),
-    "probabilidad": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-}
-
-# Creamos el DataFrame
-df = pd.DataFrame(data)
-
-# Cargamos el modelo de aprendizaje automático
-model = load_model("model.h5")
-
-# Obtenemos las predicciones del modelo
-predictions = model.predict(df)
-
-# Obtenemos los 5 números con la probabilidad más alta
-resultado = df["número"].to_list()[:5]
-
-# Imprimimos el resultado
-print(resultado)
-
-# Graficar los resultados
-plt.plot(data[:, 0], x_logistic, label="Mapeo logístico")
-plt.plot(data[:, 0], x_sensitivity, label="Análisis de la sensibilidad")
-plt.legend()
-plt.show()
+# Hacemos un gráfico de x en función de i
+plt.plot(i_array, x_array, 'b.')
+plt.xlabel('i')
+plt.ylabel('x')
+plt.title('Mapeo logístico con r = ' + str(r))
+plt.show() # Mostramos el gráfico
