@@ -1,6 +1,6 @@
 import numpy as np
 
-# ... (otros imports y definiciones aquí)
+#... (otros imports y definiciones aquí)
 
 # Preparar la semilla para comenzar la predicción
 seed = np.array([np.random.randint(1, 50)] * 4)
