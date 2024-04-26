@@ -1,25 +1,20 @@
-from keras.models import Sequential
-from keras.layers import Dense, Dropout
-from keras.regularizers import l1, l2
+python
+# Preparar la semilla para comenzar la predicción
+seed = np.array([np.random.randint(1, 50)] * 4)
+block_found = False
+while not block_found:
+ next_number_prediction = model.predict(seed.reshape((1, len(seed))))
+ next_number_scaled = scaler.inverse_transform(next_number_prediction)
+ 
+ if 1 <= next_number_scaled <= 50:
+ seed = np.roll(seed, -1)
+ seed[-1] = next_number_scaled
+ else:
+ seed = np.array([np.random.randint(1, 50)] * 4)
+ 
+ # Comprobación de si el bloque cumple la condición
+ if all(1 <= i <= 50 for i in seed):
+ block_found = True
 
-# Crear el modelo
-model = Sequential()
-
-# Aumentar la cantidad de capas ocultas y neuronas
-model.add(Dense(64, input_dim=4, activation='relu'))  # Primera capa oculta
-model.add(Dense(64, activation='relu'))  # Segunda capa oculta
-model.add(Dense(64, activation='relu'))  # Tercera capa oculta
-
-# Cambiar la función de activación
-model.add(Dense(1, activation='sigmoid'))  # Capa de salida
-
-# Inicializar los pesos de manera adecuada
-initializer = keras.initializers.GlorotUniform(seed=1)
-model.add(Dense(64, kernel_initializer=initializer))
-
-# Utilizar técnicas de regularización
-model.add(Dropout(0.5))  # Dropout
-model.add(Dense(64, kernel_regularizer=l1(0.01), bias_regularizer=l2(0.01)))  # L1/L2 regularization
-
-# Compilar el modelo
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+final_block = seed
+print('Bloque final:', ', '.join(map(str, final_block)))
