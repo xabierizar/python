@@ -1,0 +1,22 @@
+from keras.models import Sequential
+from keras.layers import Dense, Dropout
+from keras.regularizers import l1, l2
+from keras.initializers import GlorotUniform
+
+# Crear el modelo
+model = Sequential()
+
+# Aumentar la cantidad de capas ocultas y neuronas
+model.add(Dense(128, input_dim=config['input_dim'], activation=config['activation']))  # Primera capa oculta
+model.add(Dense(128, activation=config['activation']))  # Segunda capa oculta
+model.add(Dense(128, activation=config['activation']))  # Tercera capa oculta
+
+# Utilizar técnicas de regularización
+model.add(Dropout(0.5))  # Dropout para reducir el sobreajuste
+model.add(Dense(128, kernel_regularizer=l1(0.01), bias_regularizer=l2(0.01)))  # Regularización L1/L2
+
+# Añadir la capa de salida
+model.add(Dense(config['output_dim'], activation='sigmoid'))
+
+# Compilar el modelo
+model.compile(loss=config['loss'], optimizer=config['optimizer'], metrics=config['metrics'])
